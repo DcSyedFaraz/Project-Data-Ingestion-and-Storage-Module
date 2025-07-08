@@ -30,33 +30,20 @@ else
   echo "Kafka topic climate_data already exists."
 fi
 
-# 5. Build ML model (if not exists)
-echo "Building ML model..."
-# Ensure host directory models/ exists
-mkdir -p model_serving/models
-# Run preprocessing and training inside a temporary container
-docker run --rm \
-  --network host \
-  -v $(pwd)/model_serving/models:/app/models \
-  yourrepo/ml_pipeline:latest \
-  python data_preprocessing.py --input hdfs://localhost:9000/data/processed --output /tmp/ml_ready && \
-  python model_training.py --data /tmp/ml_ready --model /app/models/temperature_model.joblib
+# 5. Download and ingest public climate dataset
+echo "Fetching climate dataset..."
+./scripts/download_sample_data.sh
 
-echo "ML model built and saved to model_serving/models/temperature_model.joblib"
-
-# 6. Ingest sample data
-echo "Ingesting sample data..."
-echo '[{"timestamp":"2025-07-01T00:00:00Z","temperature":22.5,"station_id":"S1"}]' > sample.json
 TOKEN=$(curl -s -X POST http://localhost:5000/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"username":"admin","password":"password"}' | jq -r .token)
 curl -s -X POST http://localhost:5000/upload \
   -H "Authorization: Bearer $TOKEN" \
-  -F file=@sample.json > /dev/null
+  -F file=@datasets/global_temp.json > /dev/null
 
-echo "Sample data ingested."
+echo "Dataset uploaded to HDFS."
 
-# 7. Run batch job
+# 6. Run batch job
 echo "Running batch processing..."
 docker exec -i namenode spark-submit \
   --master local[*] /app/batch_processing/run_batch_jobs.py \
@@ -64,6 +51,22 @@ docker exec -i namenode spark-submit \
   --output hdfs://localhost:9000/data/processed
 
 echo "Batch processing complete."
+
+# 7. Build ML model (if not exists)
+echo "Building ML model..."
+# Ensure host directory models/ exists
+mkdir -p model_serving/models
+# Build image if missing
+if ! docker image inspect yourrepo/ml_pipeline:latest >/dev/null 2>&1; then
+  docker build -t yourrepo/ml_pipeline:latest ./ml_pipeline
+fi
+# Run preprocessing and training inside a temporary container
+docker run --rm --network host -v $(pwd)/model_serving/models:/app/models \
+  --entrypoint bash yourrepo/ml_pipeline:latest -c \
+  "python data_preprocessing.py --input hdfs://localhost:9000/data/processed --output /tmp/ml_ready && \
+   python model_training.py --data /tmp/ml_ready --model /app/models/temperature_model.joblib"
+
+echo "ML model built and saved to model_serving/models/temperature_model.joblib"
 
 # 8. Run streaming job (background)
 echo "Starting streaming job..."
@@ -79,5 +82,4 @@ PRED=$(curl -s -X POST http://localhost:6000/predict \
   -H 'Content-Type: application/json' \
   -d '{"year":2025,"month":7}')
 echo "Prediction response: $PRED"
-
 echo "Local environment setup and validation complete."
