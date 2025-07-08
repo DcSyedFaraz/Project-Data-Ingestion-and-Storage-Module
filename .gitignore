@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# PySpark / Spark
+spark-warehouse/
+*.parquet
+
+# HDFS
+hdfs_config/
+.hdfs_formatted
+namenode-data/
+datanode-data/
+
+# ML pipeline outputs
+ml_pipeline/ml_ready/
+
+# Model artifacts
+model_serving/models/
+
+# Node.js
+frontend/node_modules/
+frontend/.next/
+npm-debug.log*
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+tmp/
+
+# Logs
+*.log
+logs/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store

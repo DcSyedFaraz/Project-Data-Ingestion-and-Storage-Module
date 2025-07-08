@@ -1,0 +1,12 @@
+{
+  "name": "climate-frontend",
+  "scripts": {
+    "dev": "next dev -p 3000"
+  },
+  "dependencies": {
+    "next": "latest",
+    "next-auth": "^4.24.11",
+    "react": "latest",
+    "react-dom": "latest"
+  }
+}
