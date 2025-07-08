@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 HADOOP_HOME=/usr/local/hadoop
 export HADOOP_HOME
 export HADOOP_CONF_DIR="$HADOOP_HOME/etc/hadoop"
@@ -10,5 +13,4 @@ $HADOOP_HOME/bin/hdfs namenode -format -force
 echo "Starting HDFS daemons..."
 $HADOOP_HOME/sbin/start-dfs.sh
 
-# Check HDFS status
-$HADOOP_HOME/bin/hdfs dfsadmin -report
+# Check HDFS status$HADOOP_HOME/bin/hdfs dfsadmin -report
