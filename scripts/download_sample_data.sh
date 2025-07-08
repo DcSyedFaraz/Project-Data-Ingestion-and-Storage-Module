@@ -10,10 +10,10 @@ if [ ! -f "$DATA_CSV" ]; then
   curl -Ls -o "$DATA_CSV" https://datahub.io/core/global-temp/r/monthly.csv
 fi
 
-python <<'PY'
+python <<PY
 import csv, json
-csv_path='$DATA_CSV'
-json_path='$DATA_JSON'
+csv_path="$DATA_CSV"
+json_path="$DATA_JSON"
 rows=[]
 with open(csv_path) as f:
     r=csv.DictReader(f)

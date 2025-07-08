@@ -24,6 +24,24 @@ services:
     volumes:
       - datanode-data:/hadoop/dfs/data
 
+  spark:
+    image: bitnami/spark:3.5
+    container_name: spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark
+      - SPARK_MASTER_PORT=7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+    depends_on:
+      - namenode
+      - datanode
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    volumes:
+      - ./batch_processing:/app/batch_processing
+
   zookeeper:
     image: bitnami/zookeeper:3.7
     container_name: zookeeper
