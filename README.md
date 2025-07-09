@@ -10,6 +10,7 @@ This project provides a small end-to-end example of ingesting climate data, proc
 ## Quick Start
 
 1. **Build the ML pipeline image**
+
    ```bash
    docker build -t yourrepo/ml_pipeline:latest ./ml_pipeline
    ```
@@ -85,12 +86,40 @@ Additional scripts under `ml_pipeline` provide more sophisticated analytics:
 Models are stored in timestamped directories so historical versions remain
 accessible.
 
+Example training commands:
+
+```bash
+# Train anomaly detection and trend models
+python ml_pipeline/advanced_models.py \
+  --data datasets/ml_ready.parquet \
+  --out_dir models/latest
+
+# Re-train models whenever new data arrives
+python ml_pipeline/update_models.py \
+  --data datasets/ml_ready.parquet \
+  --output models
+```
+
 ## Interactive Dashboard
 
 The frontend includes a `/dashboard` page visualizing climate trends with
 `chart.js`. Data comes from the Flask `/dashboard` endpoint, which reads
 monthly averages from `datasets/processed.parquet` (or the path specified by
 the `DASHBOARD_DATA` environment variable).
+
+Run the Flask API:
+
+```bash
+python flask_app/app.py
+```
+
+In another terminal start the frontend:
+
+```bash
+cd frontend && npm run dev
+```
+
+Then open <http://localhost:3000/dashboard> to view the dashboard.
 
 ## Notifications and Support
 
@@ -99,3 +128,16 @@ The ingestion service exposes `/alert` for posting real-time alerts and
 recipients via the `ALERT_EMAILS` environment variable, while support messages
 are stored in `SUPPORT_LOG`.
 
+Example usage:
+
+```bash
+# Send an alert (requires valid JWT token in Authorization header)
+curl -X POST http://localhost:5000/alert \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "Temperature anomaly"}'
+
+# Submit a support request
+curl -X POST http://localhost:5000/support \
+  -H 'Content-Type: application/json' \
+  -d '{"message": "Need help with the dashboard"}'
+```

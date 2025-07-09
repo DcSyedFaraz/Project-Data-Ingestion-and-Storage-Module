@@ -30,22 +30,22 @@ printf '\n▶︎  Starting Docker Compose services…\n'
 # printf '\n▶︎  Preprocessing and training with pandas…\n'
 # mkdir -p model_serving/models # host‑side output directory
 
-# docker run --rm \
-#   -v "$(pwd)/datasets:/data" \
-#   -v "$(pwd)/model_serving/models:/app/models" \
-#   yourrepo/ml_pipeline:latest \
-#   bash -e -c $'
-#     # ① batch aggregation
-#     python batch_processing/pandas_batch_job.py \
-#       --input  /data/global_temp.json \
-#       --output /data/processed.parquet
+docker run --rm \
+  -v "$(pwd)/datasets:/data" \
+  -v "$(pwd)/model_serving/models:/app/models" \
+  yourrepo/ml_pipeline:latest \
+  bash -e -c $'
+    # ① batch aggregation
+    python batch_processing/pandas_batch_job.py \
+      --input  /data/global_temp.json \
+      --output /data/processed.parquet
 
-#     # ② feature preparation
-#     python ml_pipeline/pandas_preprocessing.py  --input  /data/processed.parquet --output /tmp/ml_ready.parquet
+    # ② feature preparation
+    python ml_pipeline/pandas_preprocessing.py  --input  /data/processed.parquet --output /tmp/ml_ready.parquet
 
-#     # ③ model training
-#     python ml_pipeline/model_training.py --data /tmp/ml_ready.parquet --model /app/models/temperature_model.joblib
-#   '
+    # ③ model training
+    python ml_pipeline/model_training.py --data /tmp/ml_ready.parquet --model /app/models/temperature_model.joblib
+  '
 
 # printf '\n✅  Model saved to model_serving/models/temperature_model.joblib\n'
 
