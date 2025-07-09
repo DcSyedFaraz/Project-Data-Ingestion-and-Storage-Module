@@ -14,7 +14,7 @@ set -euo pipefail
 
 # 1  Start services defined in docker‑compose.yml
 printf '\n▶︎  Starting Docker Compose services…\n'
-docker-compose up --build -d
+# docker-compose up --build -d
 
 # 2  Fetch sample data (writes to ./datasets)
 printf '\n▶︎  Downloading climate dataset…\n'
@@ -24,8 +24,8 @@ printf '\n▶︎  Downloading climate dataset…\n'
 printf '\n▶︎  Building ml_pipeline image…\n'
 docker build \
   -t yourrepo/ml_pipeline:latest \
-  -f "$SCRIPT_DIR/Dockerfile" \
-  "$SCRIPT_DIR"
+  -f "ml_pipeline/Dockerfile" \
+  .
 # 4  Run pandas batch‑agg, preprocessing, and training inside the container
 printf '\n▶︎  Preprocessing and training with pandas…\n'
 mkdir -p model_serving/models # host‑side output directory
