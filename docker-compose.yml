@@ -43,6 +43,7 @@ services:
       - ./batch_processing:/app/batch_processing
       - ./datasets:/app/datasets
       - ./model_serving/models:/app/models
+      - ./streaming:/app/streaming
       - ./.ivy:/ivy
 
   zookeeper:
