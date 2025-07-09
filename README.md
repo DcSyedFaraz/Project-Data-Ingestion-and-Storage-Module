@@ -74,3 +74,28 @@ python ml_pipeline/pandas_preprocessing.py \
 You can then train the model with `ml_pipeline/model_training.py` using the
 `--data datasets/ml_ready.parquet` argument.
 
+## Advanced Machine Learning
+
+Additional scripts under `ml_pipeline` provide more sophisticated analytics:
+
+- `advanced_models.py` trains anomaly detection and trend prediction models and
+  outputs feature correlations.
+- `update_models.py` retrains those models whenever new data becomes available.
+
+Models are stored in timestamped directories so historical versions remain
+accessible.
+
+## Interactive Dashboard
+
+The frontend includes a `/dashboard` page visualizing climate trends with
+`chart.js`. Data comes from the Flask `/dashboard` endpoint, which reads
+monthly averages from `datasets/processed.parquet` (or the path specified by
+the `DASHBOARD_DATA` environment variable).
+
+## Notifications and Support
+
+The ingestion service exposes `/alert` for posting real-time alerts and
+`/support` for submitting user feedback. Alerts are printed to configured email
+recipients via the `ALERT_EMAILS` environment variable, while support messages
+are stored in `SUPPORT_LOG`.
+
