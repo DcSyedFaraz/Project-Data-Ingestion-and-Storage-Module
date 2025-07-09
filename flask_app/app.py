@@ -62,6 +62,22 @@ def dashboard():
     return jsonify(payload)
 
 
+@app.route("/models", methods=["GET"])
+def list_models():
+    """Return available trained models and their files."""
+    models_dir = os.getenv("MODELS_DIR", "models")
+    if not os.path.exists(models_dir):
+        return jsonify({"models": []})
+
+    entries = []
+    for name in sorted(os.listdir(models_dir)):
+        path = os.path.join(models_dir, name)
+        files = sorted(os.listdir(path)) if os.path.isdir(path) else []
+        entries.append({"name": name, "files": files})
+
+    return jsonify({"models": entries})
+
+
 @app.route("/upload", methods=["POST"])
 @jwt_required
 def upload_file():

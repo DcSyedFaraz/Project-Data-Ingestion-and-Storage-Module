@@ -121,6 +121,21 @@ cd frontend && npm run dev
 
 Then open <http://localhost:3000/dashboard> to view the dashboard.
 
+## Model Browser
+
+The Flask API also exposes `/models`, returning a list of trained model
+directories and the files contained in each. The frontend page `/models`
+fetches this data so you can inspect what was produced by `advanced_models.py`
+or `update_models.py`.
+
+Open <http://localhost:3000/models> to view the available model files.
+
+## Prediction Chart
+
+The homepage can also visualize predictions for an entire year. Enter a year and
+click **Year Chart** to fetch monthly temperature predictions from the model
+serving API and display them using `chart.js`.
+
 ## Notifications and Support
 
 The ingestion service exposes `/alert` for posting real-time alerts and
