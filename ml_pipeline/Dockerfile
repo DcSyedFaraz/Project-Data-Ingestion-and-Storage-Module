@@ -14,6 +14,6 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 4) Copy your preprocessing & training scripts
-COPY data_preprocessing.py model_training.py ./
+COPY pandas_preprocessing.py model_training.py ./
 
 ENTRYPOINT ["python", "model_training.py"]
