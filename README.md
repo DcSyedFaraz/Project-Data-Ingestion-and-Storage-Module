@@ -49,3 +49,28 @@ python ingestion/upload_to_hdfs.py \
 
 Processed output is written to `hdfs://localhost:9000/data/processed`.
 
+## Windows-compatible processing without Spark
+
+If you cannot run Spark (for example on Windows without a full Java setup), this
+repository provides lightweight alternatives that rely only on `pandas` and
+`pyarrow`.
+
+- `batch_processing/pandas_batch_job.py` reads the raw JSON data and produces
+  monthly averages as a Parquet file.
+- `ml_pipeline/pandas_preprocessing.py` cleans that Parquet output for model
+  training.
+
+Example usage:
+
+```bash
+python batch_processing/pandas_batch_job.py \
+  --input datasets/global_temp.json \
+  --output datasets/processed.parquet
+python ml_pipeline/pandas_preprocessing.py \
+  --input datasets/processed.parquet \
+  --output datasets/ml_ready.parquet
+```
+
+You can then train the model with `ml_pipeline/model_training.py` using the
+`--data datasets/ml_ready.parquet` argument.
+
