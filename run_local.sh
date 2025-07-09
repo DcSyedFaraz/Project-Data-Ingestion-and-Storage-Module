@@ -45,10 +45,14 @@ echo "Dataset uploaded to HDFS."
 
 # 6. Run batch job
 echo "Running batch processing..."
-docker exec -i namenode spark-submit \
-  --master local[*] /app/batch_processing/run_batch_jobs.py \
-  --input hdfs://localhost:9000/data/raw \
-  --output hdfs://localhost:9000/data/processed
+mkdir -p $(pwd)/.ivy
+docker exec -i spark \
+  spark-submit \
+  --master local[*] \
+  --conf spark.jars.ivy=/ivy \
+  /app/batch_processing/run_batch_jobs.py \
+  --input hdfs://namenode:9000/data/raw \
+  --output hdfs://namenode:9000/data/processed
 
 echo "Batch processing complete."
 

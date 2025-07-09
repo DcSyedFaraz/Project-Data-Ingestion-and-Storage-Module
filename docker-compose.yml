@@ -41,6 +41,9 @@ services:
       - "8080:8080"
     volumes:
       - ./batch_processing:/app/batch_processing
+      - ./datasets:/app/datasets
+      - ./model_serving/models:/app/models
+      - ./.ivy:/ivy
 
   zookeeper:
     image: bitnami/zookeeper:3.7
