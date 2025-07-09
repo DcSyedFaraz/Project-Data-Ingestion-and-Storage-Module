@@ -86,8 +86,10 @@ services:
       context: ./model_serving
       dockerfile: Dockerfile
     container_name: model_serving
+    volumes:
+      - ./model_serving/models:/app/models:ro
     ports:
-      - "6000:6000"
+      - "8000:8000"
     depends_on:
       - ingestion
 

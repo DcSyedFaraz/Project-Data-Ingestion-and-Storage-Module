@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { getSession } from 'next-auth/react'
 
-export async function getServerSideProps(context) {
-    const session = await getSession(context)
-    if (!session) {
-        return { redirect: { destination: '/api/auth/signin', permanent: false } }
-    }
-    return { props: { session } }
-}
+// export async function getServerSideProps(context) {
+//     const session = await getSession(context)
+//     if (!session) {
+//         return { redirect: { destination: '/api/auth/signin', permanent: false } }
+//     }
+//     return { props: { session } }
+// }
 
 export default function Home() {
     const [year, setYear] = useState('');
@@ -16,9 +16,9 @@ export default function Home() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await fetch('http://localhost:6000/predict', {
+        const res = await fetch('http://localhost:8000/predict', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://localhost:3000', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Private-Network': 'true', 'Access-Control-Allow-Expose-Headers': 'Content-Type' },
             body: JSON.stringify({ year: parseInt(year), month: parseInt(month) }),
         });
         const json = await res.json();

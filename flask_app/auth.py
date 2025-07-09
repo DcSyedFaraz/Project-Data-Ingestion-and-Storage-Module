@@ -13,9 +13,11 @@ JWT_EXP_DELTA_HOURS = 2
 @auth_bp.route("/login", methods=["POST"])
 def login():
     creds = request.get_json()
+    # return jsonify(creds)
     username = creds.get("username")
     password = creds.get("password")
     # TODO: replace with real user validation
+    # return jsonify({username: username, password: password})
     if username == os.getenv("ADMIN_USER", "admin") and password == os.getenv(
         "ADMIN_PASS", "password"
     ):

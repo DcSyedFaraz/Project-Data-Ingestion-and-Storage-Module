@@ -14,7 +14,7 @@ COPY app.py ./
 COPY models ./models
 
 # Expose port
-EXPOSE 6000
+EXPOSE 8000
 
 # Start the service
 CMD ["python", "app.py"]

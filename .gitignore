@@ -28,7 +28,7 @@ datanode-data/
 ml_pipeline/ml_ready/
 
 # Model artifacts
-model_serving/models/
+# model_serving/models/
 
 # Node.js
 frontend/node_modules/

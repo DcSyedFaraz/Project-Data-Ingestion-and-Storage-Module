@@ -14,7 +14,6 @@ COPY ml_pipeline/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 4) Copy your preprocessing & training scripts
-COPY ml_pipeline/ ./ml_pipeline/
-COPY batch_processing/ ./batch_processing/
+COPY ml_pipeline/pandas_preprocessing.py ml_pipeline/model_training.py ./
 
-ENTRYPOINT ["python", "ml_pipeline/model_training.py"]
+ENTRYPOINT ["python", "model_training.py"]
