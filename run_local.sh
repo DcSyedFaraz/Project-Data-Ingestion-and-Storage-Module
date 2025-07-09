@@ -74,11 +74,14 @@ echo "ML model built and saved to model_serving/models/temperature_model.joblib"
 
 # 8. Run streaming job (background)
 echo "Starting streaming job..."
-docker exec -d namenode spark-submit \
-  --master local[*] /app/streaming/spark_streaming/run_streaming_job.py \
-  --broker localhost:9092 \
+docker exec -d spark \
+  spark-submit \
+  --master local[*] \
+  --conf spark.jars.ivy=/ivy \
+  /app/streaming/spark_streaming/run_streaming_job.py \
+  --broker kafka:9092 \
   --topic climate_data \
-  --output hdfs://localhost:9000/data/streaming
+  --output hdfs://namenode:9000/data/streaming
 
 # 9. Smoke test endpoints
 echo "Testing prediction endpoint..."
