@@ -1,21 +1,15 @@
 from flask import Flask, make_response, request, jsonify
+from flask_cors import CORS
 import joblib
 import pandas as pd
 
 # Load trained model
 model = joblib.load("models/temperature_model.joblib")
 app = Flask(__name__)
+CORS(app, resources={r"/predict": {"origins": "http://localhost:3000"}})
 
 
-@app.after_request
-def add_cors_headers(resp):
-    resp.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    return resp
-
-
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["POST", "OPTIONS"])
 def predict():
     if request.method == "OPTIONS":
         # must still go through after_request to get the CORS headers
