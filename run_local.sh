@@ -44,31 +44,39 @@ curl -s -X POST http://localhost:5000/upload \
 echo "Dataset uploaded to HDFS."
 
 # 6. Run batch job
-echo "Running batch processing..."
-mkdir -p $(pwd)/.ivy
-docker exec -i spark \
-  spark-submit \
-  --master local[*] \
-  --conf spark.jars.ivy=/ivy \
-  /app/batch_processing/run_batch_jobs.py \
-  --input hdfs://namenode:9000/data/raw \
-  --output hdfs://namenode:9000/data/processed
+# echo "Running batch processing..."
+# mkdir -p $(pwd)/.ivy
+# docker exec -i spark \
+#   spark-submit \
+#   --master local[*] \
+#   --conf spark.jars.ivy=/ivy \
+#   /app/batch_processing/run_batch_jobs.py \
+#   --input hdfs://namenode:9000/data/raw \
+#   --output hdfs://namenode:9000/data/processed
 
-echo "Batch processing complete."
+# echo "Batch processing complete."
 
 # 7. Build ML model (if not exists)
 echo "Building ML model..."
-# Ensure host directory models/ exists
 mkdir -p model_serving/models
-# Build image if missing
+
 if ! docker image inspect yourrepo/ml_pipeline:latest >/dev/null 2>&1; then
-  docker build -t yourrepo/ml_pipeline:latest ./ml_pipeline
+  # make sure we point at the Dockerfile in the repo root
+  docker build -t yourrepo/ml_pipeline:latest .
 fi
+
 # Run preprocessing and training inside a temporary container
-docker run --rm --network host -v $(pwd)/model_serving/models:/app/models \
-  --entrypoint bash yourrepo/ml_pipeline:latest -c \
-  "python data_preprocessing.py --input hdfs://localhost:9000/data/processed --output /tmp/ml_ready && \
-   python model_training.py --data /tmp/ml_ready --model /app/models/temperature_model.joblib"
+docker run --rm \
+  --network host \
+  -v "$(pwd)/model_serving/models:/app/models" \
+  --entrypoint bash \
+  yourrepo/ml_pipeline:latest \
+  -c "python data_preprocessing.py \
+       --input hdfs://localhost:9000/data/processed \
+       --output /tmp/ml_ready && \
+     python model_training.py \
+       --data /tmp/ml_ready \
+       --model /app/models/temperature_model.joblib"
 
 echo "ML model built and saved to model_serving/models/temperature_model.joblib"
 

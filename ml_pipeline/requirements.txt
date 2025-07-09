@@ -1,4 +1,6 @@
 pandas
 numpy
-scikit-learn
-joblibpyarrow
+scikit-learn==1.6.1
+joblib
+pyarrow
+pyspark
