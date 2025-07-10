@@ -1,3 +1,4 @@
+from click import Path
 from flask import Flask, request, jsonify
 import os
 from hdfs import InsecureClient
@@ -13,6 +14,7 @@ client = InsecureClient(
     os.getenv("NAMENODE_URL", "http://namenode:50070"),
     user=os.getenv("HDFS_USER", "hdfs"),
 )
+
 
 # Simple alert function
 def send_alert(message: str) -> None:
@@ -53,28 +55,30 @@ def dashboard():
         return jsonify({"error": "data not found"}), 404
 
     df = pd.read_parquet(data_path)
-    monthly = (
-        df.groupby("month")["avg_temp"]
-        .mean()
-        .reindex(range(1, 13), fill_value=0)
-    )
+    monthly = df.groupby("month")["avg_temp"].mean().reindex(range(1, 13), fill_value=0)
     payload = {"labels": monthly.index.tolist(), "values": monthly.values.tolist()}
     return jsonify(payload)
 
 
 @app.route("/models", methods=["GET"])
 def list_models():
-    """Return available trained models and their files."""
-    models_dir = os.getenv("MODELS_DIR", "models")
+    print("sdsd")
+    DEFAULT_MODELS_DIR = Path(__file__).parent / "models"
+    models_dir = os.getenv("MODELS_DIR", DEFAULT_MODELS_DIR)
+    print("MODELS_DIR:", models_dir)
     if not os.path.exists(models_dir):
+        print("Models directory does not exist.")
         return jsonify({"models": []})
 
     entries = []
     for name in sorted(os.listdir(models_dir)):
         path = os.path.join(models_dir, name)
+        print("Checking:", path)
         files = sorted(os.listdir(path)) if os.path.isdir(path) else []
+        print("Files:", files)
         entries.append({"name": name, "files": files})
 
+    print("Entries:", entries)
     return jsonify({"models": entries})
 
 

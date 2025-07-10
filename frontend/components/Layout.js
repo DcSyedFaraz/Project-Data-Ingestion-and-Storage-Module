@@ -12,7 +12,7 @@ export default function Layout({ children, title = 'TempPredict' }) {
         { name: 'Dashboard', href: '/dashboard', icon: '📊' },
         { name: 'Home', href: '/', icon: '🏠' },
         { name: 'Models', href: '/models', icon: '🤖' },
-        { name: 'Upload', href: '/upload', icon: '📁' },
+        // { name: 'Upload', href: '/upload', icon: '📁' },
         { name: 'Support', href: '/support', icon: '💬' },
     ]
 
@@ -52,8 +52,8 @@ export default function Layout({ children, title = 'TempPredict' }) {
                                         key={item.name}
                                         href={item.href}
                                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${isActive(item.href)
-                                                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
-                                                : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+                                            : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
                                             }`}
                                     >
                                         <span>{item.icon}</span>
@@ -87,8 +87,8 @@ export default function Layout({ children, title = 'TempPredict' }) {
                                     key={item.name}
                                     href={item.href}
                                     className={`flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center space-x-1 ${isActive(item.href)
-                                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                                            : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                                        : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
                                         }`}
                                 >
                                     <span>{item.icon}</span>

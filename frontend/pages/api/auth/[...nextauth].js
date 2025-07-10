@@ -10,21 +10,27 @@ export default NextAuth({
                 password: { label: 'Password', type: 'password' }
             },
             async authorize(credentials) {
+                // console.log('Credentials received:', credentials)
+
                 const res = await fetch('http://localhost:5000/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials)
                 })
-                // console.log('Response from auth endpoint:', res.status, res.statusText, res);
 
                 const data = await res.json()
-                if (res.ok && data.token) {
+                console.log('Response from auth endpoint:', res.status, res.statusText, data);
+                if (data.token) {
                     return { token: data.token }
                 }
                 return null
             }
         })
     ],
+    pages: {
+        signIn: '/auth/signin',
+        signOut: '/auth/signout',
+    },
     session: {
         strategy: 'jwt'
     },
